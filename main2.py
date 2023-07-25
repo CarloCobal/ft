@@ -1,4 +1,4 @@
-# main.py
+# main2.py
 from transformers import Trainer, TrainingArguments, AutoModelForSequenceClassification, AutoTokenizer
 from datasets import load_from_disk
 import argparse
@@ -35,7 +35,6 @@ if torch.cuda.device_count() > 1:
 
 # Load the tokenized datasets from disk
 tokenized_datasets = load_from_disk("./tokenized_datasets")
-tokenized_test_datasets = load_from_disk("./tokenized_test_datasets")
 
 # Create TrainingArguments
 training_args = TrainingArguments(
@@ -66,8 +65,8 @@ def compute_metrics(eval_pred):
 trainer = Trainer(
     model=model,
     args=training_args,
-    train_dataset=tokenized_datasets,
-    eval_dataset=tokenized_test_datasets,
+    train_dataset=tokenized_datasets["train"],  # use the train split of the tokenized dataset
+    eval_dataset=tokenized_datasets["test"],  # use the test split of the tokenized dataset
     # Add this line for distributed training
     data_collator=DataCollatorWithPadding(tokenizer),
     compute_metrics=compute_metrics,
